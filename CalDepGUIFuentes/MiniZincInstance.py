@@ -9,7 +9,7 @@ from datetime import timedelta
 #     formatted_matrix += "|]"
 #     return formatted_matrix
 
-def MiniZincInstance(n,min,max,D):
+def MiniZincInstance(solver_name,n,min,max,D):
     with open('CalDep.mzn', 'r') as f:
         minizinc_code = f.read()
 
@@ -23,7 +23,7 @@ def MiniZincInstance(n,min,max,D):
     model = minizinc.Model()
     model.add_string(minizinc_code)
 
-    solver = minizinc.Solver.lookup("chuffed")
+    solver = minizinc.Solver.lookup(solver_name)
 
     instance = minizinc.Instance(solver, model)
 
