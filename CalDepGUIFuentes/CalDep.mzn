@@ -1,25 +1,3 @@
-% Use this editor as a MiniZinc scratch book
-% Archivo de Datos .dzn
-n = 6;
-Min = 1;
-Max = 3;
-%D = [| 0, 745, 665, 929 |
-%     745, 0, 80, 337 |
-%     665, 80, 0, 380|
-%     929, 337, 380, 0|];
-
-D = [| 0, 144, 336, 321, 124, 141|
-144, 0, 480, 465, 268, 233|
-336, 480, 0, 425, 392, 477|
-321, 465, 425, 0, 197, 462|
-124, 268, 392, 197, 0, 265|
-141, 233, 477, 462, 265, 0|];
-
-%D = [| 0, 553, 204, 248|
-%553, 0 ,443, 305|
-%204, 443, 0, 138|
-%248, 305, 138, 0|];
-
 
 % Modelo .mzn
 int: n;
@@ -69,6 +47,15 @@ constraint forall (j in 1..n) (
    abs(Cal[i, j]) != abs(Cal[i+1, j])
  )
 );
+%Añade una restricción para que las fechas de ida y vuelta sean siempre las mismas para cada equipo 
+constraint forall (j in 1..n-1) (
+ forall (i in 1..2*(n-1)-1) (
+  forall (k in 1..2*(n-1)-1) (
+   (if(abs(Cal[i, j]) == abs(Cal[k, j]))then abs(Cal[i, j+1]) = abs(Cal[k, j+1]) endif)
+  ) 
+ )
+);
+
 %Funcion objetivo
 var int: objective = sum(i in 1..2*(n-1), j in 1..n) (
 (if (Cal[i,j] < 0 /\ Cal[i-1,j] < 0) then
